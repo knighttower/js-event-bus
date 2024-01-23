@@ -230,7 +230,7 @@ declare global {
     }
 }
 
-const eventBus = () => {
+function eventBus(): EventBus {
     // support for browser
     if (typeof window !== 'undefined') {
         if (!window.eventBus) {
@@ -250,6 +250,6 @@ const eventBus = () => {
 
     // if none of the above is available, return a new instance
     return new EventBus();
-};
+}
 
 export { EventBus, EventCallback, ListenerType, EventBus as default, eventBus };

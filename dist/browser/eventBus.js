@@ -187,7 +187,7 @@ class EventBus {
         return eventName in this.listeners;
     }
 }
-const eventBus = () => {
+function eventBus() {
     // support for browser
     if (typeof window !== 'undefined') {
         if (!window.eventBus) {
@@ -203,5 +203,4 @@ const eventBus = () => {
     }
     // if none of the above is available, return a new instance
     return new EventBus();
-};
-
+}
