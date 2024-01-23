@@ -187,7 +187,9 @@ class EventBus {
         return eventName in this.listeners;
     }
 }
-function eventBus() {
+
+
+function _eventBus() {
     // support for browser
     if (typeof window !== 'undefined') {
         if (!window.eventBus) {

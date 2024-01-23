@@ -230,7 +230,7 @@ declare global {
     }
 }
 
-function eventBus(): EventBus {
+function _eventBus(): EventBus {
     // support for browser
     if (typeof window !== 'undefined') {
         if (!window.eventBus) {
@@ -252,4 +252,4 @@ function eventBus(): EventBus {
     return new EventBus();
 }
 
-export { EventBus, EventCallback, ListenerType, EventBus as default, eventBus };
+export { EventBus, EventCallback, ListenerType, EventBus as default, _eventBus };

@@ -61,12 +61,12 @@ If you want to use it in your Browser apps you can import the library like this:
 
     <script src=" https://cdn.jsdelivr.net/npm/@knighttower/js-event-bus@latest/dist/browser/eventBus.min.js "></script>
     <script>
-        eventBus(); // global instance
+        _eventBus(); // global instance
         // or if you want to use it with scope as 
         const EventBus = new EventBus();
         
         // global and named scoped 
-        const eventBus = eventBus();
+        const eventBus = _eventBus();
         // then you can use it
         window.eventBus.on('my-event', function () {
             console.log('Inside `my-event`');

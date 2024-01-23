@@ -187,7 +187,7 @@ class EventBus {
         return eventName in this.listeners;
     }
 }
-function eventBus() {
+function _eventBus() {
     // support for browser
     if (typeof window !== 'undefined') {
         if (!window.eventBus) {
@@ -204,4 +204,4 @@ function eventBus() {
     // if none of the above is available, return a new instance
     return new EventBus();
 }
-export { EventBus, EventBus as default, eventBus };
+export { EventBus, EventBus as default, _eventBus };

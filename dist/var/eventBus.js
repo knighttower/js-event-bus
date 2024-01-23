@@ -52,8 +52,8 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   EventBus: () => (/* binding */ EventBus),
-/* harmony export */   "default": () => (/* binding */ EventBus),
-/* harmony export */   eventBus: () => (/* binding */ eventBus)
+/* harmony export */   _eventBus: () => (/* binding */ _eventBus),
+/* harmony export */   "default": () => (/* binding */ EventBus)
 /* harmony export */ });
 class EventBus {
     constructor() {
@@ -244,7 +244,7 @@ class EventBus {
         return eventName in this.listeners;
     }
 }
-function eventBus() {
+function _eventBus() {
     // support for browser
     if (typeof window !== 'undefined') {
         if (!window.eventBus) {
