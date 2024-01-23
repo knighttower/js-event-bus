@@ -61,7 +61,9 @@ If you want to use it in your Browser apps you can import the library like this:
 
     <script src=" https://cdn.jsdelivr.net/npm/@knighttower/js-event-bus@latest/dist/browser/eventBus.min.js "></script>
     <script>
-        const eventBus = new EventBus();
+        eventBus(); // global instance
+        // or if you want to use it with scope
+        const EventBus = new EventBus();
     </script>
 </body>
 ```

@@ -34,6 +34,22 @@ const filesToMinify = [
             mangle: true,
         },
     },
+    {
+        input: 'dist/amd/eventBus.js',
+        output: 'dist/amd/eventBus.min.js',
+        options: {
+            compress: true,
+            mangle: true,
+        },
+    },
+    {
+        input: 'dist/var/eventBus.js',
+        output: 'dist/var/eventBus.min.js',
+        options: {
+            compress: true,
+            mangle: true,
+        },
+    },
 ];
 
 async function minifyFile(input, output, options) {

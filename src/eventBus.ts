@@ -222,4 +222,34 @@ class EventBus {
         return eventName in this.listeners;
     }
 }
-export { EventBus, EventCallback, ListenerType, EventBus as default, EventBus as eventBus };
+
+// @ts-ignore
+declare global {
+    interface Window {
+        eventBus: EventBus;
+    }
+}
+
+const eventBus = () => {
+    // support for browser
+    if (typeof window !== 'undefined') {
+        if (!window.eventBus) {
+            window.eventBus = new EventBus();
+        }
+
+        return window.eventBus;
+    }
+
+    if (typeof global !== 'undefined') {
+        if (!(global as any).eventBus) {
+            (global as any).eventBus = new EventBus();
+        }
+
+        return (global as any).eventBus;
+    }
+
+    // if none of the above is available, return a new instance
+    return new EventBus();
+};
+
+export { EventBus, EventCallback, ListenerType, EventBus as default, eventBus };

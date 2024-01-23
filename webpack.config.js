@@ -42,7 +42,8 @@ const targets = [{ name: 'eventBus', ext: 'js' }];
 const configs = targets.flatMap((target) => [
     getWebpackConfig(target.name, 'umd', 'umd', target.ext),
     getWebpackConfig(target.name, 'commonjs2', 'cjs', target.ext),
-    getWebpackConfig(target.name, 'window', 'browser', target.ext),
+    getWebpackConfig(target.name, 'amd', 'amd', target.ext),
+    getWebpackConfig(target.name, 'var', 'var', target.ext),
 ]);
 
 module.exports = configs;

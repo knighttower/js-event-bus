@@ -1,14 +1,4 @@
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define("EventBus", [], factory);
-	else if(typeof exports === 'object')
-		exports["EventBus"] = factory();
-	else
-		root["EventBus"] = factory();
-})(self, () => {
-return /******/ (() => { // webpackBootstrap
+define("EventBus", [], () => { return /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	// The require scope
 /******/ 	var __webpack_require__ = {};
@@ -273,4 +263,4 @@ const eventBus = () => {
 /******/ 	return __webpack_exports__;
 /******/ })()
 ;
-});
+});;

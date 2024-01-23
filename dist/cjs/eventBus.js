@@ -16,6 +16,18 @@
 /******/ 		};
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/global */
+/******/ 	(() => {
+/******/ 		__webpack_require__.g = (function() {
+/******/ 			if (typeof globalThis === 'object') return globalThis;
+/******/ 			try {
+/******/ 				return this || new Function('return this')();
+/******/ 			} catch (e) {
+/******/ 				if (typeof window === 'object') return window;
+/******/ 			}
+/******/ 		})();
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
@@ -38,7 +50,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   EventBus: () => (/* binding */ EventBus),
 /* harmony export */   "default": () => (/* binding */ EventBus),
-/* harmony export */   eventBus: () => (/* binding */ EventBus)
+/* harmony export */   eventBus: () => (/* binding */ eventBus)
 /* harmony export */ });
 class EventBus {
     constructor() {
@@ -229,6 +241,23 @@ class EventBus {
         return eventName in this.listeners;
     }
 }
+const eventBus = () => {
+    // support for browser
+    if (typeof window !== 'undefined') {
+        if (!window.eventBus) {
+            window.eventBus = new EventBus();
+        }
+        return window.eventBus;
+    }
+    if (typeof __webpack_require__.g !== 'undefined') {
+        if (!__webpack_require__.g.eventBus) {
+            __webpack_require__.g.eventBus = new EventBus();
+        }
+        return __webpack_require__.g.eventBus;
+    }
+    // if none of the above is available, return a new instance
+    return new EventBus();
+};
 
 
 module.exports.EventBus = __webpack_exports__;

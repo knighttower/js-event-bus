@@ -187,4 +187,21 @@ class EventBus {
         return eventName in this.listeners;
     }
 }
-export { EventBus, EventBus as default, EventBus as eventBus };
+const eventBus = () => {
+    // support for browser
+    if (typeof window !== 'undefined') {
+        if (!window.eventBus) {
+            window.eventBus = new EventBus();
+        }
+        return window.eventBus;
+    }
+    if (typeof global !== 'undefined') {
+        if (!global.eventBus) {
+            global.eventBus = new EventBus();
+        }
+        return global.eventBus;
+    }
+    // if none of the above is available, return a new instance
+    return new EventBus();
+};
+export { EventBus, EventBus as default, eventBus };

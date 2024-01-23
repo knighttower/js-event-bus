@@ -1,14 +1,5 @@
-(function webpackUniversalModuleDefinition(root, factory) {
-	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory();
-	else if(typeof define === 'function' && define.amd)
-		define("EventBus", [], factory);
-	else if(typeof exports === 'object')
-		exports["EventBus"] = factory();
-	else
-		root["EventBus"] = factory();
-})(self, () => {
-return /******/ (() => { // webpackBootstrap
+var EventBus;
+/******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
 /******/ 	// The require scope
 /******/ 	var __webpack_require__ = {};
@@ -56,6 +47,8 @@ return /******/ (() => { // webpackBootstrap
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it declares 'EventBus' on top-level, which conflicts with the current library output.
+(() => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   EventBus: () => (/* binding */ EventBus),
@@ -270,7 +263,8 @@ const eventBus = () => {
 };
 
 
-/******/ 	return __webpack_exports__;
+})();
+
+EventBus = __webpack_exports__;
 /******/ })()
 ;
-});
