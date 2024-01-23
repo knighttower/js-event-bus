@@ -182,25 +182,6 @@ class EventBus {
     }
 
     /**
-     * Get a list of listeners based on a pattern
-     * @method getListernerByPattern
-     * @private
-     * @param {string} pattern - The pattern to search for
-     * @return {ListenerType[]|null} - Returns a list of listeners that match the pattern, or null if no match is found
-     */
-    private getListernerByPattern(pattern: string): ListenerType[] | null {
-        let listeners: ListenerType[] | null = null;
-
-        Object.keys(this.listeners).forEach((key) => {
-            if (key.includes(pattern)) {
-                listeners = this.listeners[key];
-            }
-        });
-
-        return listeners;
-    }
-
-    /**
      * Extract the context from the arguments
      * @method extractContextFromArgs
      * @private
@@ -241,4 +222,4 @@ class EventBus {
         return eventName in this.listeners;
     }
 }
-export { EventBus, EventCallback, ListenerType, EventBus as default };
+export { EventBus, EventCallback, ListenerType, EventBus as default, EventBus as eventBus };

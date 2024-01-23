@@ -1,6 +1,6 @@
 {
   "name": "@knighttower/js-event-bus",
-  "version": "3.1.3",
+  "version": "3.0.1",
   "description": "Event bus for your Javascript applications",
   "homepage": "https://github.com/knighttower/js-event-bus",
   "main": "src/eventBus.ts",
@@ -9,6 +9,18 @@
   "browser": "dist/browser/eventBus.min.js",
   "author": "Boris Cerati <contact@boris-cerati.fr> (https://boris-cerati.fr)",
   "license": "MIT",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/module/eventBus.js",
+      "require": "./dist/cjs/eventBus.js"
+    },
+    "./dist/*": "./dist/*",
+    "./src/*": "./src/*"
+  },
   "keywords": [
     "event",
     "bus",
@@ -16,26 +28,30 @@
     "nodejs",
     "browser",
     "javascript",
-    "typescript"
+    "typescript",
+    "DOM",
+    "functions",
+    "helper",
+    "knighttower"
   ],
   "repository": {
     "type": "git",
     "url": "https://github.com/knighttower/js-event-bus.git"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^6.7.0",
-    "@typescript-eslint/parser": "^6.7.0",
-    "eslint": "^8.51.0",
-    "eslint-config-prettier": "^9.0.0",
-    "eslint-plugin-prettier": "^5.0.1",
-    "jshint": "^2.13.4",
-    "prettier": "^3.0.3",
-    "pretty-quick": "^3.1.3",
-    "terser": "^5.19.4",
-    "ts-loader": "^9.4.4",
-    "typescript": "^5.2.2",
-    "vitest": "^0.34.4",
-    "webpack": "^5.88.2",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "jshint": "^2.13.6",
+    "prettier": "^3.2.4",
+    "pretty-quick": "^4.0.0",
+    "terser": "^5.27.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.3.3",
+    "vitest": "^0.34.6",
+    "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4"
   },
   "scripts": {

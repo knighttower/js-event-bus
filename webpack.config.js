@@ -8,7 +8,7 @@ const path = require('path');
  * @returns {Object} - The Webpack configuration.
  */
 const getWebpackConfig = (libraryName, libraryTarget, dir, ext) => ({
-    entry: `./src/${libraryName}.${ext}`,
+    entry: `./dist/module/${libraryName}.${ext}`,
     resolve: {
         modules: ['node_modules', path.resolve(__dirname, 'src')],
         extensions: ['.mjs', '.js', '.json', '.cjs', '.ts'],
@@ -16,7 +16,7 @@ const getWebpackConfig = (libraryName, libraryTarget, dir, ext) => ({
     output: {
         path: path.resolve(__dirname, `dist/${dir}`),
         filename: `${libraryName}.js`,
-        library: libraryName,
+        library: 'EventBus',
         libraryTarget: libraryTarget,
         umdNamedDefine: true,
     },
@@ -36,7 +36,7 @@ const getWebpackConfig = (libraryName, libraryTarget, dir, ext) => ({
     ignoreWarnings: [/Critical dependency: require function is used/],
 });
 
-const targets = [{ name: 'eventBus', ext: 'ts' }];
+const targets = [{ name: 'eventBus', ext: 'js' }];
 
 // Generate multiple configurations
 const configs = targets.flatMap((target) => [

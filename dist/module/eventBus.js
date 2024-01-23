@@ -1,220 +1,190 @@
-(function (factory) {
-    if (typeof module === "object" && typeof module.exports === "object") {
-        var v = factory(require, exports);
-        if (v !== undefined) module.exports = v;
+class EventBus {
+    constructor() {
+        // Memory storage for all the events
+        this.listeners = {};
     }
-    else if (typeof define === "function" && define.amd) {
-        define(["require", "exports"], factory);
+    // creates an event that can be triggered any number of times
+    /**
+     * creates an event that can be triggered any number of times
+     * @method on
+     * @param {string} eventName - The name of the event
+     * @param {function} callback - The callback to execute
+     * @return {void}
+     * @example eventBus.on('event.name', function() { console.log('event.name was triggered') })
+     */
+    on(eventName, callback) {
+        this.registerListener(eventName, callback);
     }
-})(function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = exports.EventBus = void 0;
-    class EventBus {
-        constructor() {
-            // Memory storage for all the events
-            this.listeners = {};
+    /**
+     * creates an event that can be triggered only once. If it is emitted twice, the callback will only be executed once!
+     * @method once
+     * @param {string} eventName - The name of the event
+     * @param {function} callback - The callback to execute
+     * @return {void}
+     * @example eventBus.once('event.name', function() { console.log('event.name was triggered only once') })
+     */
+    once(eventName, callback) {
+        this.registerListener(eventName, callback, 1);
+    }
+    /**
+     * reates an event that can be triggered only a number of times. If it is emitted more than that, the callback will not be be executed anymore!
+     * @method exactly
+     * @param {string} eventName - The name of the event
+     * @return {void}
+     * @example eventBus.exactly('event.name', function() { console.log('event.name was triggered 3 times') }, 3)
+     */
+    exactly(eventName, callback, capacity) {
+        this.registerListener(eventName, callback, capacity);
+    }
+    /**
+     * kill an event with all it's callbacks
+     * @method off
+     * @param {string} eventName - The name of the event
+     * @return {void}
+     * @example eventBus.off('event.name')
+     */
+    off(eventName) {
+        delete this.listeners[eventName];
+    }
+    /**
+     * removes the given callback for the given event
+     * @method detach
+     * @param {string} eventName - The name of the event
+     * @param {function} callback - The callback to remove
+     * @return {void|boolean} - Returns true if the event was found and removed, void otherwise
+     * @example eventBus.detach('event.name', callback)
+     */
+    detach(eventName, callback) {
+        const listeners = this.listeners[eventName] || [];
+        const filteredListeners = listeners.filter(function (value) {
+            return value.callback !== callback;
+        });
+        if (eventName in this.listeners) {
+            this.listeners[eventName] = filteredListeners;
+            return true; // Event was found and removed
         }
-        // creates an event that can be triggered any number of times
-        /**
-         * creates an event that can be triggered any number of times
-         * @method on
-         * @param {string} eventName - The name of the event
-         * @param {function} callback - The callback to execute
-         * @return {void}
-         * @example eventBus.on('event.name', function() { console.log('event.name was triggered') })
-         */
-        on(eventName, callback) {
-            this.registerListener(eventName, callback);
+        return false; // Event was not found
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    /**
+     * emits an event with the given name and arguments
+     * @param {string} eventName - The name of the event
+     * @param {any} args - The arguments to pass to the callback
+     * @return {void}
+     * @use {__context: this|Instance} to pass the context to the callback
+     * @example eventBus.emit('event.name', arg1, arg2, arg3)
+     * @example eventBus.emit('event.name', arg1, arg2, arg3, {__context: YourInstance})
+     */
+    emit(eventName, ...args) {
+        let queueListeners = [];
+        let matches = null;
+        const allArgs = this.extractContextFromArgs(args);
+        const context = allArgs[0];
+        args = allArgs[1];
+        // name exact match
+        if (this.hasListener(eventName)) {
+            queueListeners = this.listeners[eventName];
         }
-        /**
-         * creates an event that can be triggered only once. If it is emitted twice, the callback will only be executed once!
-         * @method once
-         * @param {string} eventName - The name of the event
-         * @param {function} callback - The callback to execute
-         * @return {void}
-         * @example eventBus.once('event.name', function() { console.log('event.name was triggered only once') })
-         */
-        once(eventName, callback) {
-            this.registerListener(eventName, callback, 1);
-        }
-        /**
-         * reates an event that can be triggered only a number of times. If it is emitted more than that, the callback will not be be executed anymore!
-         * @method exactly
-         * @param {string} eventName - The name of the event
-         * @return {void}
-         * @example eventBus.exactly('event.name', function() { console.log('event.name was triggered 3 times') }, 3)
-         */
-        exactly(eventName, callback, capacity) {
-            this.registerListener(eventName, callback, capacity);
-        }
-        /**
-         * kill an event with all it's callbacks
-         * @method off
-         * @param {string} eventName - The name of the event
-         * @return {void}
-         * @example eventBus.off('event.name')
-         */
-        off(eventName) {
-            delete this.listeners[eventName];
-        }
-        /**
-         * removes the given callback for the given event
-         * @method detach
-         * @param {string} eventName - The name of the event
-         * @param {function} callback - The callback to remove
-         * @return {void|boolean} - Returns true if the event was found and removed, void otherwise
-         * @example eventBus.detach('event.name', callback)
-         */
-        detach(eventName, callback) {
-            const listeners = this.listeners[eventName] || [];
-            const filteredListeners = listeners.filter(function (value) {
-                return value.callback !== callback;
-            });
-            if (eventName in this.listeners) {
-                this.listeners[eventName] = filteredListeners;
-                return true; // Event was found and removed
-            }
-            return false; // Event was not found
-        }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        /**
-         * emits an event with the given name and arguments
-         * @param {string} eventName - The name of the event
-         * @param {any} args - The arguments to pass to the callback
-         * @return {void}
-         * @use {__context: this|Instance} to pass the context to the callback
-         * @example eventBus.emit('event.name', arg1, arg2, arg3)
-         * @example eventBus.emit('event.name', arg1, arg2, arg3, {__context: YourInstance})
-         */
-        emit(eventName, ...args) {
-            let queueListeners = [];
-            let matches = null;
-            const allArgs = this.extractContextFromArgs(args);
-            const context = allArgs[0];
-            args = allArgs[1];
-            // name exact match
-            if (this.hasListener(eventName)) {
-                queueListeners = this.listeners[eventName];
+        else {
+            // -----------------------------------------
+            // Wildcard support
+            if (eventName.includes('*')) {
+                // case 1, if the incoming string has * or ** in it
+                // which will suppport emit("name*") or emit("name**") or emit("name.*name**")
+                matches = this.patternSearch(eventName, Object.keys(this.listeners));
+                if (matches) {
+                    matches.forEach((match) => {
+                        queueListeners = queueListeners.concat(this.listeners[match]);
+                    });
+                }
             }
             else {
-                // -----------------------------------------
-                // Wildcard support
-                if (eventName.includes('*')) {
-                    // case 1, if the incoming string has * or ** in it
-                    // which will suppport emit("name*") or emit("name**") or emit("name.*name**")
-                    matches = this.patternSearch(eventName, Object.keys(this.listeners));
+                // case 2, if the incoming string matches a registered pattern
+                // which will support on("name*") | on("name**") | on("name.*name**")
+                for (const key in this.listeners) {
+                    matches = this.patternSearch(key, [eventName]);
                     if (matches) {
-                        matches.forEach((match) => {
-                            queueListeners = queueListeners.concat(this.listeners[match]);
-                        });
-                    }
-                }
-                else {
-                    // case 2, if the incoming string matches a registered pattern
-                    // which will support on("name*") | on("name**") | on("name.*name**")
-                    for (const key in this.listeners) {
-                        matches = this.patternSearch(key, [eventName]);
-                        if (matches) {
-                            queueListeners = queueListeners.concat(this.listeners[key]);
-                        }
+                        queueListeners = queueListeners.concat(this.listeners[key]);
                     }
                 }
             }
-            queueListeners.forEach((listener, k) => {
-                let callback = listener.callback;
-                if (context) {
-                    callback = callback.bind(context);
-                }
-                callback(...args);
-                if (listener.triggerCapacity !== undefined) {
-                    listener.triggerCapacity--;
-                    queueListeners[k].triggerCapacity = listener.triggerCapacity;
-                }
-                if (this.checkToRemoveListener(listener)) {
-                    this.listeners[eventName].splice(k, 1);
-                }
-            });
         }
-        /**
-         * Search for a pattern in a list of strings
-         * @method patternSearch
-         * @private
-         * @param {string} pattern - The pattern to search for
-         * @param {string[]} list - The list of strings to search in
-         * @return {string[]|null} - Returns a list of strings that match the pattern, or null if no match is found
-         * @example patternSearch('name.*', ['name.a', 'name.b', 'name.c']) // returns ['name.a', 'name.b', 'name.c']
-         */
-        patternSearch(pattern, list) {
-            let filteredList = [];
-            // console.log('__testLogHere__', pattern, this.setWildCardString(pattern));
-            const regex = new RegExp(this.setWildCardString(pattern));
-            filteredList = list.filter((item) => regex.test(item));
-            return filteredList.length === 0 ? null : filteredList;
-        }
-        setWildCardString(string) {
-            // eslint-disable-next-line
-            let regexStr = string.replace(/([.+?^${}()|\[\]\/\\])/g, '\\$&'); // escape all regex special chars
-            regexStr = regexStr
-                // eslint-disable-next-line
-                .replace(/\*\*/g, '[_g_]') // Replace wildcard patterns with temporary markers
-                // eslint-disable-next-line
-                .replace(/\*/g, '(.*?)')
-                .replace(/\[_g_\]/g, '.*');
-            return `^${regexStr}$`;
-        }
-        /**
-         * Get a list of listeners based on a pattern
-         * @method getListernerByPattern
-         * @private
-         * @param {string} pattern - The pattern to search for
-         * @return {ListenerType[]|null} - Returns a list of listeners that match the pattern, or null if no match is found
-         */
-        getListernerByPattern(pattern) {
-            let listeners = null;
-            Object.keys(this.listeners).forEach((key) => {
-                if (key.includes(pattern)) {
-                    listeners = this.listeners[key];
-                }
-            });
-            return listeners;
-        }
-        /**
-         * Extract the context from the arguments
-         * @method extractContextFromArgs
-         * @private
-         * @param {any[]} args - The arguments to extract the context from
-         * @return {any[]} - Returns an array with the context as the first element and the arguments as the second element
-         */
-        extractContextFromArgs(args) {
-            let context = null;
-            for (let i = 0; i < args.length; i++) {
-                const arg = args[i];
-                // eslint-disable-next-line
-                if (arg && typeof arg === 'object' && arg.hasOwnProperty('__context')) {
-                    context = arg.__context;
-                    args.splice(i, 1);
-                    break;
-                }
+        queueListeners.forEach((listener, k) => {
+            let callback = listener.callback;
+            if (context) {
+                callback = callback.bind(context);
             }
-            return [context, args];
-        }
-        registerListener(eventName, callback, triggerCapacity) {
-            if (!this.hasListener(eventName)) {
-                this.listeners[eventName] = [];
+            callback(...args);
+            if (listener.triggerCapacity !== undefined) {
+                listener.triggerCapacity--;
+                queueListeners[k].triggerCapacity = listener.triggerCapacity;
             }
-            this.listeners[eventName].push({ callback, triggerCapacity });
-        }
-        checkToRemoveListener(eventInformation) {
-            if (eventInformation.triggerCapacity !== undefined) {
-                return eventInformation.triggerCapacity <= 0;
+            if (this.checkToRemoveListener(listener)) {
+                this.listeners[eventName].splice(k, 1);
             }
-            return false;
-        }
-        hasListener(eventName) {
-            return eventName in this.listeners;
-        }
+        });
     }
-    exports.EventBus = EventBus;
-    exports.default = EventBus;
-});
+    /**
+     * Search for a pattern in a list of strings
+     * @method patternSearch
+     * @private
+     * @param {string} pattern - The pattern to search for
+     * @param {string[]} list - The list of strings to search in
+     * @return {string[]|null} - Returns a list of strings that match the pattern, or null if no match is found
+     * @example patternSearch('name.*', ['name.a', 'name.b', 'name.c']) // returns ['name.a', 'name.b', 'name.c']
+     */
+    patternSearch(pattern, list) {
+        let filteredList = [];
+        // console.log('__testLogHere__', pattern, this.setWildCardString(pattern));
+        const regex = new RegExp(this.setWildCardString(pattern));
+        filteredList = list.filter((item) => regex.test(item));
+        return filteredList.length === 0 ? null : filteredList;
+    }
+    setWildCardString(string) {
+        // eslint-disable-next-line
+        let regexStr = string.replace(/([.+?^${}()|\[\]\/\\])/g, '\\$&'); // escape all regex special chars
+        regexStr = regexStr
+            // eslint-disable-next-line
+            .replace(/\*\*/g, '[_g_]') // Replace wildcard patterns with temporary markers
+            // eslint-disable-next-line
+            .replace(/\*/g, '(.*?)')
+            .replace(/\[_g_\]/g, '.*');
+        return `^${regexStr}$`;
+    }
+    /**
+     * Extract the context from the arguments
+     * @method extractContextFromArgs
+     * @private
+     * @param {any[]} args - The arguments to extract the context from
+     * @return {any[]} - Returns an array with the context as the first element and the arguments as the second element
+     */
+    extractContextFromArgs(args) {
+        let context = null;
+        for (let i = 0; i < args.length; i++) {
+            const arg = args[i];
+            // eslint-disable-next-line
+            if (arg && typeof arg === 'object' && arg.hasOwnProperty('__context')) {
+                context = arg.__context;
+                args.splice(i, 1);
+                break;
+            }
+        }
+        return [context, args];
+    }
+    registerListener(eventName, callback, triggerCapacity) {
+        if (!this.hasListener(eventName)) {
+            this.listeners[eventName] = [];
+        }
+        this.listeners[eventName].push({ callback, triggerCapacity });
+    }
+    checkToRemoveListener(eventInformation) {
+        if (eventInformation.triggerCapacity !== undefined) {
+            return eventInformation.triggerCapacity <= 0;
+        }
+        return false;
+    }
+    hasListener(eventName) {
+        return eventName in this.listeners;
+    }
+}
+export { EventBus, EventBus as default, EventBus as eventBus };

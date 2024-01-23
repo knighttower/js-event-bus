@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
     "target": "ES6", // Specify ECMAScript target version
-    "module": "UMD", // Specify module code generation
+    "module": "ES2022", // Specify module code generation
     "outDir": "./dist/module", // Output directory
     "rootDir": "./src", // Root directory (where your TypeScript files are)
     "strict": true, // Enable all strict type checking options
-    "esModuleInterop": true // Enables CommonJS/AMD/UMD module imports
+    "esModuleInterop": true, // Enables CommonJS/AMD/UMD module imports
+    "moduleResolution": "node" // Specify module resolution strategy
   },
   "include": [
     "src/**/*.ts"
