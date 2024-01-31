@@ -1,4 +1,5 @@
-define(['exports'], (function (exports) { 'use strict';
+var eventBus = (function (exports) {
+    'use strict';
 
     class EventBus {
         constructor() {
@@ -213,4 +214,6 @@ define(['exports'], (function (exports) { 'use strict';
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
-}));
+    return exports;
+
+})({});

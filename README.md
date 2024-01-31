@@ -4,6 +4,12 @@
 
 **Refactoring and Updates:**
 
+---- 2024 ----
+-   Distribution files are now in the root of the project
+-   Distribution builds to support node / browser / module and other environments
+-   Available via NPM (@knighttower/js-event-bus) && JsDelivr (https://cdn.jsdelivr.net/npm/@knighttower/js-event-bus@latest/dist/browser/eventBus.min.js)
+
+---- 2023 ----
 -   Remove some unnecessary methods to make it SOLID
 -   Remove different file language versions to unify the code into one and ease maintenance
 -   Fixed and made the code JsDocs and Ts compliant
