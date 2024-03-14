@@ -1,3 +1,9 @@
+---
+# ATTENTION: 
+## This repo has been moved as part of a monorepo to -> https://github.com/knighttower/JsUtility
+
+---
+
 # js-event-bus
 
 ### Simple Event Bus library built for any JavaScript application.
